@@ -365,3 +365,5 @@ FodyWeavers.xsd
 /objs
 /uics
 /RingBuffer.qtvscr
+*.autosave
+/ui_MainWindow.h
