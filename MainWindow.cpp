@@ -57,7 +57,7 @@ MainWindow::resetFormFields() const
     ui->bytesWritten->setText(QString("%L1").arg(gBytesWritten));
     ui->bytesRead->setText(QString("%L1").arg(gBytesRead));
     ui->basicBlockSize->setText(QString("%L1").arg(mpBuffer->chunkSize()));
-    ui->overruns->setText(QString("%L1").arg(gUnderruns));
+    ui->underruns->setText(QString("%L1").arg(gUnderruns));
 }
 
 MainWindow::~MainWindow()
