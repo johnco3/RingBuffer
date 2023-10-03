@@ -81,8 +81,10 @@ MainWindow::timerEvent(QTimerEvent* event)
                 const auto nRemaining = gTestBufferLength - offset;
                 const auto nBytesToWrite = std::min<qint64>(
                     nRemaining, blockLen);
-                // this API does not fail - pattern slightly different for each gBuffersWritten
-                mpBuffer->append(gFixedTestBuffer.data() + offset + gBuffersWritten, nBytesToWrite);
+                // this API does not fail - pattern slightly
+                // different for each gBuffersWritten
+                mpBuffer->append(gFixedTestBuffer.data() +
+                    offset + gBuffersWritten, nBytesToWrite);
                 offset += nBytesToWrite;
                 gBytesWritten += nBytesToWrite;
                 nBlocksWritten++;
@@ -142,7 +144,7 @@ MainWindow::timerEvent(QTimerEvent* event)
             std::ranges::fill(readBuffer, 0);
         }
         ui->bufferSize->setText(QString(
-            "%L1").arg(mpBuffer->size()));
+            "%L1 bytes").arg(mpBuffer->size()));
     } else { // pass unhandled timer event up the chain
         QObject::timerEvent(event);
     }
@@ -151,7 +153,7 @@ MainWindow::timerEvent(QTimerEvent* event)
 void
 MainWindow::on_start_clicked()
 {
-    // if already started stop the worker threads
+    // if timer is already running, stop it
     if (ui->start->text() == "Start") {
         // reset stats
         gErrorCounter = 0;
@@ -165,7 +167,8 @@ MainWindow::on_start_clicked()
         resetFormFields();
         // disable button until protocol started
         ui->start->setText("Stop");
-        mpTimer->start(50, Qt::PreciseTimer, this);
+
+        mpTimer->start(ui->timerPeriod->value(), Qt::PreciseTimer, this);
     } else {
         if (mpTimer->isActive()) {
             mpTimer->stop();
@@ -175,3 +178,12 @@ MainWindow::on_start_clicked()
         ui->start->setText("Start");
     }
 }
+
+void
+MainWindow::on_timerPeriod_valueChanged(int value) {
+    if (mpTimer->isActive()) {
+        mpTimer->stop();
+        mpTimer->start(value, Qt::PreciseTimer, this);
+    }
+}
+
