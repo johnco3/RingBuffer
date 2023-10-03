@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>592</width>
-    <height>459</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,6 +55,9 @@
                <height>25</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Number of 'write block size' blocks written to ring buffer</string>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -81,6 +84,9 @@
                <height>25</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Total bytes written to ring buffer</string>
+             </property>
             </widget>
            </item>
            <item row="2" column="0">
@@ -106,6 +112,9 @@
                <width>140</width>
                <height>25</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>1,500 test data written to ring buffer in blocks of this size</string>
              </property>
              <property name="suffix">
               <string> bytes</string>
@@ -137,6 +146,9 @@
                <width>140</width>
                <height>25</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>First 5 bytes from test buffer sent to ring buffer</string>
              </property>
             </widget>
            </item>
@@ -189,6 +201,9 @@
                <height>25</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Number of 'read block size' blocks read from ring buffer</string>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -215,6 +230,9 @@
                <height>25</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Total bytes read from ring buffer</string>
+             </property>
             </widget>
            </item>
            <item row="2" column="0">
@@ -240,6 +258,9 @@
                <width>140</width>
                <height>25</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>1,500 test data read from ring buffer in blocks of this size</string>
              </property>
              <property name="suffix">
               <string> bytes</string>
@@ -272,6 +293,9 @@
                <height>25</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>First 5 bytes read from ring buffer</string>
+             </property>
             </widget>
            </item>
            <item row="3" column="0">
@@ -290,7 +314,7 @@
         <item row="1" column="0">
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
-           <string>Buffer Stats</string>
+           <string>Ring buffer statistics</string>
           </property>
           <layout class="QFormLayout" name="formLayout_3">
            <property name="labelAlignment">
@@ -323,6 +347,9 @@
                <height>25</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Internal chunk size used in QRingBuffer</string>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -348,6 +375,9 @@
                <width>140</width>
                <height>25</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>Available bytes for read before underrun</string>
              </property>
             </widget>
            </item>
@@ -375,6 +405,19 @@
                <height>25</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>Number of mismatched buffers</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Underrun errors</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
             </widget>
            </item>
            <item row="3" column="1">
@@ -391,41 +434,8 @@
                <height>25</height>
               </size>
              </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>Overrun errors</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Underrun errors</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QLineEdit" name="overruns">
-             <property name="minimumSize">
-              <size>
-               <width>140</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>140</width>
-               <height>25</height>
-              </size>
+             <property name="toolTip">
+              <string>Number of times 'waiting for read' empty when attempting to read from ring buffer</string>
              </property>
             </widget>
            </item>
@@ -467,6 +477,9 @@
                <width>140</width>
                <height>25</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>rate control: 1:1 (normal), 2:1 (buffer grows), 1:2 (buffer starved - underruns)</string>
              </property>
              <property name="suffix">
               <string>:1</string>

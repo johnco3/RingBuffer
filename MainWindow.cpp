@@ -1,5 +1,6 @@
 // SYSTEM INCLUDES
 #include <QBasicTimer>
+#include <QStyleFactory>
 #include <range/v3/all.hpp>
 #include <private/qringbuffer_p.h>
 
@@ -17,7 +18,6 @@
 namespace {
     qint64 gCounter = 0;
     qint64 gUnderruns = 0;
-    qint64 gOverruns = 0;
     qint64 gErrorCounter = 0;
     qint64 gReadBlockCounter = 0;
     qint64 gWriteBlockCounter = 0;
@@ -41,7 +41,9 @@ MainWindow::MainWindow(QWidget *parent)
     , mpBuffer{ std::make_unique<QRingBuffer>() }
 {
     ui->setupUi(this);
-    gErrorCounter = gWriteBlockCounter = gReadBlockCounter = 0;
+    // enable dark and light mode support to follow the windows settings.
+    qApp->setStyle(QStyleFactory::create("Fusion"));
+    gErrorCounter = gWriteBlockCounter = gReadBlockCounter = gUnderruns = 0;
     resetFormFields();
 }
 
@@ -55,8 +57,7 @@ MainWindow::resetFormFields() const
     ui->bytesWritten->setText(QString("%L1").arg(gBytesWritten));
     ui->bytesRead->setText(QString("%L1").arg(gBytesRead));
     ui->basicBlockSize->setText(QString("%L1").arg(mpBuffer->chunkSize()));
-    ui->underruns->setText(QString("%L1").arg(gUnderruns));
-    ui->overruns->setText(QString("%L1").arg(gOverruns));
+    ui->overruns->setText(QString("%L1").arg(gUnderruns));
 }
 
 MainWindow::~MainWindow()
@@ -113,6 +114,9 @@ MainWindow::timerEvent(QTimerEvent* event)
                     nBlocksRead++;
                 } else if (offset < gTestBufferLength) {
                     // cannot read from empty buffer
+                    ++gUnderruns;
+                    ui->underruns->setText(QString(
+                        "%L1").arg(gUnderruns));
                     break;
                 }
             }
