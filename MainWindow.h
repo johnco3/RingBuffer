@@ -29,6 +29,8 @@ public:
 private slots:
     void on_start_clicked();
 
+    void on_timerPeriod_valueChanged(int arg1);
+
 private:
     void timerEvent(QTimerEvent* event) override;
     void resetFormFields() const;
