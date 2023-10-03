@@ -368,3 +368,4 @@ FodyWeavers.xsd
 *.autosave
 /ui_MainWindow.h
 *.sln
+/RingBuffer.vcxproj
