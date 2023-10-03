@@ -15,18 +15,21 @@
 // STATIC VARIABLE INITIALIZATIONS
 
 namespace {
-    auto gCounter = 0;
-    auto gErrorCounter = 0;
-    auto gReadBlockCounter = 0;
-    auto gWriteBlockCounter = 0;
-    auto gWriteBlockSize = 512;
-    auto gReadBlockSize = 512;
-    auto gBytesWritten = 0;
-    auto gBytesRead = 0;
+    qint64 gCounter = 0;
+    qint64 gUnderruns = 0;
+    qint64 gOverruns = 0;
+    qint64 gErrorCounter = 0;
+    qint64 gReadBlockCounter = 0;
+    qint64 gWriteBlockCounter = 0;
+    qint64 gBytesWritten = 0;
+    qint64 gBytesRead = 0;
+    qint64 gBuffersWritten = 0;
+    qint64 gBuffersRead = 0;
+    constexpr qint64 gTestBufferLength = 1500;
     const std::vector<char> gFixedTestBuffer =
         ranges::views::closed_iota('A', 'Z')
         | ranges::views::cycle
-        | ranges::views::take(1500)
+        | ranges::views::take(gTestBufferLength + 500)
         | ranges::to<std::vector<char>>();
     std::vector<char> readBuffer(gFixedTestBuffer.size());
 }
@@ -39,7 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     gErrorCounter = gWriteBlockCounter = gReadBlockCounter = 0;
-    gWriteBlockSize = gReadBlockSize = 512;
     resetFormFields();
 }
 
@@ -50,10 +52,11 @@ MainWindow::resetFormFields() const
     ui->writeBlockCounter->setText(QString::number(gWriteBlockCounter));
     ui->readBlockCounter->setText(QString::number(gReadBlockCounter));
     ui->bufferSize->setText(QString("%L1").arg(mpBuffer->size()));
-    ui->readBlockSize->setValue(gReadBlockSize);
-    ui->writeBlockSize->setValue(gWriteBlockSize);
     ui->bytesWritten->setText(QString("%L1").arg(gBytesWritten));
     ui->bytesRead->setText(QString("%L1").arg(gBytesRead));
+    ui->basicBlockSize->setText(QString("%L1").arg(mpBuffer->chunkSize()));
+    ui->underruns->setText(QString("%L1").arg(gUnderruns));
+    ui->overruns->setText(QString("%L1").arg(gOverruns));
 }
 
 MainWindow::~MainWindow()
@@ -65,35 +68,42 @@ void
 MainWindow::timerEvent(QTimerEvent* event)
 {
     if (event->timerId() == mpTimer->timerId()) {
-        if (++gCounter % 3 != 0) {
+        // min 1, max 5
+        const auto writeReadRatio = ui->writeReadRatio->value();
+        // more writes than reads 4:1
+        if (++gCounter % (writeReadRatio+1) != 0) {
             // write multiple blocks into buffer
-            auto offset = 0;
+            qint64 offset = 0;
             const auto blockLen = ui->writeBlockSize->value();
             auto nBlocksWritten = 0;
-            while (offset < static_cast<int>(gFixedTestBuffer.size())) {
-                const auto nRemaining = static_cast<int>(
-                    gFixedTestBuffer.size() - offset);
-                const auto nBytesToWrite = std::min(
+            while (offset < gTestBufferLength) {
+                const auto nRemaining = gTestBufferLength - offset;
+                const auto nBytesToWrite = std::min<qint64>(
                     nRemaining, blockLen);
-                // this API does not fail
-                mpBuffer->append(gFixedTestBuffer.data() + offset, nBytesToWrite);
+                // this API does not fail - pattern slightly different for each gBuffersWritten
+                mpBuffer->append(gFixedTestBuffer.data() + offset + gBuffersWritten, nBytesToWrite);
                 offset += nBytesToWrite;
                 gBytesWritten += nBytesToWrite;
                 nBlocksWritten++;
             }
             gWriteBlockCounter += nBlocksWritten;
+            // show a preview (1st 5 bytes) of the data in hex form
+            ui->writePreview->setText(QByteArray(gFixedTestBuffer.data() +
+                gBuffersWritten, 5).toHex(',') + "...");
+            gBuffersWritten++;
             ui->writeBlockCounter->setText(QString(
                 "%L1").arg(gWriteBlockCounter));
             ui->bytesWritten->setText(QString(
                 "%L1").arg(gBytesWritten));
-        } else { // read multiple blocks into readBuffer
-            auto offset = 0;
+
+        } else {
+            // read multiple blocks into readBuffer
+            qint64 offset = 0;
             const auto blockLen = ui->readBlockSize->value();
             auto nBlocksRead = 0;
-            while (offset < static_cast<int>(readBuffer.size())) {
-                const auto nRemaining = static_cast<int>(
-                    readBuffer.size() - offset);
-                const auto nBytesToRead = std::min(
+            while (offset < gTestBufferLength) {
+                const auto nRemaining = gTestBufferLength - offset;
+                const auto nBytesToRead = std::min<qint64>(
                     nRemaining, blockLen);
                 const auto nBytesRead = mpBuffer->read(
                     readBuffer.data() + offset, nBytesToRead);
@@ -101,8 +111,8 @@ MainWindow::timerEvent(QTimerEvent* event)
                     offset += nBytesRead;
                     gBytesRead += nBytesRead;
                     nBlocksRead++;
-                } else if (offset < static_cast<int>(readBuffer.size())) {
-                    // this is an error
+                } else if (offset < gTestBufferLength) {
+                    // cannot read from empty buffer
                     break;
                 }
             }
@@ -111,12 +121,18 @@ MainWindow::timerEvent(QTimerEvent* event)
                 "%L1").arg(gReadBlockCounter));
             ui->bytesRead->setText(QString(
                 "%L1").arg(gBytesRead));
-            if (offset == static_cast<int>(readBuffer.size())) {
-                // compare buffers cyclic pattern data
-                if (gFixedTestBuffer != readBuffer) {
+            if (offset == gTestBufferLength) {
+                // compare sliding window cyclic buffer pattern
+                if (memcmp(readBuffer.data(),
+                    gFixedTestBuffer.data() + gBuffersRead,
+                    gTestBufferLength) != 0) {
                     ui->errorCounter->setText(QString(
                         "%L1").arg(++gErrorCounter));
                 }
+                // show a preview (1st 5 bytes) of the data in hex form
+                ui->readPreview->setText(QByteArray(
+                    readBuffer.data(), 5).toHex(',') + "...");
+                gBuffersRead++;
             }
             // reset the buffer
             std::ranges::fill(readBuffer, 0);
@@ -134,11 +150,15 @@ MainWindow::on_start_clicked()
     // if already started stop the worker threads
     if (ui->start->text() == "Start") {
         // reset stats
-        gErrorCounter = gWriteBlockCounter = gReadBlockCounter = gBytesWritten = gBytesRead = 0;
+        gErrorCounter = 0;
+        gWriteBlockCounter = 0;
+        gReadBlockCounter = 0;
+        gBytesWritten = 0;
+        gBytesRead = 0;
         resetFormFields();
         // disable button until protocol started
         ui->start->setText("Stop");
-        mpTimer->start(1000, Qt::PreciseTimer, this);
+        mpTimer->start(50, Qt::PreciseTimer, this);
     } else {
         if (mpTimer->isActive()) {
             mpTimer->stop();

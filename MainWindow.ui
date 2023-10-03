@@ -6,23 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
-    <height>366</height>
+    <width>592</width>
+    <height>459</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QRingBuffer Tester</string>
+   <string>SPSC Tester 1.0</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QGridLayout" name="gridLayout">
+       <layout class="QGridLayout" name="gridLayout" rowstretch="1,0">
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
-           <string>Writer</string>
+           <string>Writer Thread</string>
           </property>
           <layout class="QFormLayout" name="formLayout">
            <property name="labelAlignment">
@@ -45,13 +45,13 @@
             <widget class="QLineEdit" name="writeBlockCounter">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
@@ -71,13 +71,13 @@
             <widget class="QLineEdit" name="bytesWritten">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
@@ -97,13 +97,13 @@
             <widget class="QSpinBox" name="writeBlockSize">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
@@ -111,13 +111,42 @@
               <string> bytes</string>
              </property>
              <property name="minimum">
-              <number>512</number>
+              <number>100</number>
              </property>
              <property name="maximum">
-              <number>8192</number>
+              <number>10000</number>
              </property>
              <property name="singleStep">
-              <number>512</number>
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>100</number>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="writePreview">
+             <property name="minimumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_18">
+             <property name="text">
+              <string>Buffer data</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -127,7 +156,7 @@
         <item row="0" column="1">
          <widget class="QGroupBox" name="groupBox_2">
           <property name="title">
-           <string>Reader</string>
+           <string>Reader Thread</string>
           </property>
           <layout class="QFormLayout" name="formLayout_2">
            <property name="labelAlignment">
@@ -150,13 +179,13 @@
             <widget class="QLineEdit" name="readBlockCounter">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
@@ -176,13 +205,13 @@
             <widget class="QLineEdit" name="bytesRead">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
@@ -202,13 +231,13 @@
             <widget class="QSpinBox" name="readBlockSize">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
@@ -216,13 +245,42 @@
               <string> bytes</string>
              </property>
              <property name="minimum">
-              <number>512</number>
+              <number>100</number>
              </property>
              <property name="maximum">
-              <number>8192</number>
+              <number>10000</number>
              </property>
              <property name="singleStep">
-              <number>512</number>
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>100</number>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="readPreview">
+             <property name="minimumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_20">
+             <property name="text">
+              <string>Buffer data</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -232,7 +290,7 @@
         <item row="1" column="0">
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
-           <string>RingBuffer</string>
+           <string>Buffer Stats</string>
           </property>
           <layout class="QFormLayout" name="formLayout_3">
            <property name="labelAlignment">
@@ -242,9 +300,9 @@
             <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
            </property>
            <item row="0" column="0">
-            <widget class="QLabel" name="label_17">
+            <widget class="QLabel" name="label_19">
              <property name="text">
-              <string>Size</string>
+              <string>Chunk size</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -252,25 +310,25 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLineEdit" name="bufferSize">
+            <widget class="QLineEdit" name="basicBlockSize">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="label_17">
              <property name="text">
-              <string>Available</string>
+              <string>Waiting for read</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -278,16 +336,16 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLineEdit" name="bufferAvailable">
+            <widget class="QLineEdit" name="bufferSize">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
@@ -296,7 +354,7 @@
            <item row="2" column="0">
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>Errors</string>
+              <string>Corrputed reads</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -307,15 +365,120 @@
             <widget class="QLineEdit" name="errorCounter">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>140</width>
                <height>25</height>
               </size>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="underruns">
+             <property name="minimumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Overrun errors</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Underrun errors</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="overruns">
+             <property name="minimumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QGroupBox" name="groupBox_7">
+          <property name="title">
+           <string>Stream Control</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_4">
+           <property name="labelAlignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="formAlignment">
+            <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Write:Read ratio</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="writeReadRatio">
+             <property name="minimumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>140</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="suffix">
+              <string>:1</string>
+             </property>
+             <property name="maximum">
+              <number>10</number>
+             </property>
+             <property name="singleStep">
+              <number>1</number>
+             </property>
+             <property name="value">
+              <number>1</number>
              </property>
             </widget>
            </item>
@@ -358,7 +521,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>512</width>
+     <width>592</width>
      <height>23</height>
     </rect>
    </property>
