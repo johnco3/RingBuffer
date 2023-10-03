@@ -53,9 +53,9 @@ MainWindow::resetFormFields() const
     ui->errorCounter->setText(QString::number(gErrorCounter));
     ui->writeBlockCounter->setText(QString::number(gWriteBlockCounter));
     ui->readBlockCounter->setText(QString::number(gReadBlockCounter));
-    ui->bufferSize->setText(QString("%L1").arg(mpBuffer->size()));
-    ui->bytesWritten->setText(QString("%L1").arg(gBytesWritten));
-    ui->bytesRead->setText(QString("%L1").arg(gBytesRead));
+    ui->bufferSize->setText(QString("%L1 bytes").arg(mpBuffer->size()));
+    ui->bytesWritten->setText(QString("%L1 bytes").arg(gBytesWritten));
+    ui->bytesRead->setText(QString("%L1 bytes").arg(gBytesRead));
     ui->basicBlockSize->setValue(mpBuffer->chunkSize());
     ui->underruns->setText(QString("%L1").arg(gUnderruns));
 }
@@ -90,12 +90,12 @@ MainWindow::timerEvent(QTimerEvent* event)
             gWriteBlockCounter += nBlocksWritten;
             // assuming ascii pattern buffer - show buffer data preview
             ui->writePreview->setText(QByteArray(gFixedTestBuffer.data() +
-                gBuffersWritten, 18)/*.toHex(',')*/ + "...");
+                gBuffersWritten, 25)/*.toHex(',')*/ + "...");
             gBuffersWritten++;
             ui->writeBlockCounter->setText(QString(
                 "%L1").arg(gWriteBlockCounter));
             ui->bytesWritten->setText(QString(
-                "%L1").arg(gBytesWritten));
+                "%L1 bytes").arg(gBytesWritten));
 
         } else {
             // read multiple blocks into readBuffer
@@ -124,7 +124,7 @@ MainWindow::timerEvent(QTimerEvent* event)
             ui->readBlockCounter->setText(QString(
                 "%L1").arg(gReadBlockCounter));
             ui->bytesRead->setText(QString(
-                "%L1").arg(gBytesRead));
+                "%L1 bytes").arg(gBytesRead));
             if (offset == gTestBufferLength) {
                 // compare sliding window cyclic buffer pattern
                 if (memcmp(readBuffer.data(),
@@ -135,7 +135,7 @@ MainWindow::timerEvent(QTimerEvent* event)
                 }
                 // assuming ascii pattern buffer - show buffer data preview
                 ui->readPreview->setText(QByteArray(
-                    readBuffer.data(), 18)/*.toHex(',')*/ + "...");
+                    readBuffer.data(), 25)/*.toHex(',')*/ + "...");
                 gBuffersRead++;
             }
             // reset the buffer
