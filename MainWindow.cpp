@@ -56,7 +56,7 @@ MainWindow::resetFormFields() const
     ui->bufferSize->setText(QString("%L1").arg(mpBuffer->size()));
     ui->bytesWritten->setText(QString("%L1").arg(gBytesWritten));
     ui->bytesRead->setText(QString("%L1").arg(gBytesRead));
-    ui->basicBlockSize->setText(QString("%L1").arg(mpBuffer->chunkSize()));
+    ui->basicBlockSize->setValue(mpBuffer->chunkSize());
     ui->underruns->setText(QString("%L1").arg(gUnderruns));
 }
 
@@ -88,9 +88,9 @@ MainWindow::timerEvent(QTimerEvent* event)
                 nBlocksWritten++;
             }
             gWriteBlockCounter += nBlocksWritten;
-            // show a preview (1st 5 bytes) of the data in hex form
+            // assuming ascii pattern buffer - show buffer data preview
             ui->writePreview->setText(QByteArray(gFixedTestBuffer.data() +
-                gBuffersWritten, 5).toHex(',') + "...");
+                gBuffersWritten, 18)/*.toHex(',')*/ + "...");
             gBuffersWritten++;
             ui->writeBlockCounter->setText(QString(
                 "%L1").arg(gWriteBlockCounter));
@@ -133,9 +133,9 @@ MainWindow::timerEvent(QTimerEvent* event)
                     ui->errorCounter->setText(QString(
                         "%L1").arg(++gErrorCounter));
                 }
-                // show a preview (1st 5 bytes) of the data in hex form
+                // assuming ascii pattern buffer - show buffer data preview
                 ui->readPreview->setText(QByteArray(
-                    readBuffer.data(), 5).toHex(',') + "...");
+                    readBuffer.data(), 18)/*.toHex(',')*/ + "...");
                 gBuffersRead++;
             }
             // reset the buffer
@@ -159,6 +159,9 @@ MainWindow::on_start_clicked()
         gReadBlockCounter = 0;
         gBytesWritten = 0;
         gBytesRead = 0;
+        mpBuffer->setChunkSize(ui->basicBlockSize->value());
+        // not sure if this can change while running
+        ui->basicBlockSize->setEnabled(false);
         resetFormFields();
         // disable button until protocol started
         ui->start->setText("Stop");
@@ -167,6 +170,8 @@ MainWindow::on_start_clicked()
         if (mpTimer->isActive()) {
             mpTimer->stop();
         }
+        // not sure if this can change while running
+        ui->basicBlockSize->setEnabled(true);
         ui->start->setText("Start");
     }
 }
