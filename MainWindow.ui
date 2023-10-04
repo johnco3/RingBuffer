@@ -56,7 +56,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Number of 'block size' blocks written to ring buffer</string>
+              <string>#min(1,500, 'block size') chunks written to ring buffer</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -88,7 +88,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Total bytes written to ring buffer</string>
+              <string>total bytes written to ring buffer</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -157,7 +157,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>First 5 bytes from test buffer sent to ring buffer</string>
+              <string>first bytes of 1,500 byte buffer written to ring buffer</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -214,7 +214,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Number of 'block size' blocks read from ring buffer</string>
+              <string>#min(1,500, 'block size') chunks read from ring buffer</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -246,7 +246,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Total bytes read from ring buffer</string>
+              <string>total bytes read from ring buffer</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -315,7 +315,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>First 5 bytes read from ring buffer</string>
+              <string>first bytes of 1,500 byte buffer read from ring buffer</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -382,7 +382,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Available bytes for read before underrun</string>
+              <string>available bytes for read before underrun</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -414,7 +414,7 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Number of mismatched buffers</string>
+              <string>#mismatched buffers</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -446,7 +446,8 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>Number of times 'waiting for read' empty when attempting to read from ring buffer</string>
+              <string>underrun counter
+(reading empty ring buffer)</string>
              </property>
              <property name="readOnly">
               <bool>true</bool>
@@ -527,7 +528,10 @@
               </size>
              </property>
              <property name="toolTip">
-              <string>rate control: 1:1 (normal), 2:1 (buffer grows), 1:2 (buffer starved - underruns)</string>
+              <string>rate control:
+1:1 - normal
+N:1 - buffer grows over time
+0:1 - read only - underruns</string>
              </property>
              <property name="showGroupSeparator" stdset="0">
               <bool>true</bool>
