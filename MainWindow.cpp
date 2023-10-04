@@ -83,6 +83,8 @@ MainWindow::timerEvent(QTimerEvent* event)
                     nRemaining, blockLen);
                 // this API does not fail - pattern slightly
                 // different for each gBuffersWritten
+                // must make sure that we wrap around after 500 reads
+                // or the offset will push us off the edge
                 mpBuffer->append(gFixedTestBuffer.data() +
                     offset + (gBuffersWritten % 500), nBytesToWrite);
                 offset += nBytesToWrite;
@@ -92,13 +94,12 @@ MainWindow::timerEvent(QTimerEvent* event)
             gWriteBlockCounter += nBlocksWritten;
             // assuming ascii pattern buffer - show buffer data preview
             ui->writePreview->setText(QByteArray(gFixedTestBuffer.data() +
-                gBuffersWritten, 25)/*.toHex(',')*/ + "...");
+                (gBuffersWritten % 500), 25)/*.toHex(',')*/ + "...");
             gBuffersWritten++;
             ui->writeBlockCounter->setText(QString(
                 "%L1").arg(gWriteBlockCounter));
             ui->bytesWritten->setText(QString(
                 "%L1 bytes").arg(gBytesWritten));
-
         } else {
             // read multiple blocks into readBuffer
             qint64 offset = 0;
@@ -127,8 +128,12 @@ MainWindow::timerEvent(QTimerEvent* event)
                 "%L1").arg(gReadBlockCounter));
             ui->bytesRead->setText(QString(
                 "%L1 bytes").arg(gBytesRead));
+            // check to ensure we read a full buffer
+            // before comparing written to read data
             if (offset == gTestBufferLength) {
                 // compare sliding window cyclic buffer pattern
+                // must make sure that we wrap around after 500 reads
+                // or the offset will push us off the edge
                 if (memcmp(readBuffer.data(),
                     gFixedTestBuffer.data() + (gBuffersRead % 500),
                     gTestBufferLength) != 0) {
@@ -161,13 +166,13 @@ MainWindow::on_start_clicked()
         gReadBlockCounter = 0;
         gBytesWritten = 0;
         gBytesRead = 0;
+        mpBuffer->clear();
         mpBuffer->setChunkSize(ui->basicBlockSize->value());
         // not sure if this can change while running
         ui->basicBlockSize->setEnabled(false);
         resetFormFields();
         // disable button until protocol started
         ui->start->setText("Stop");
-
         mpTimer->start(ui->timerPeriod->value(), Qt::PreciseTimer, this);
     } else {
         if (mpTimer->isActive()) {
