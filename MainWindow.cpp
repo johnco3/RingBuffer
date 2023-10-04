@@ -84,7 +84,7 @@ MainWindow::timerEvent(QTimerEvent* event)
                 // this API does not fail - pattern slightly
                 // different for each gBuffersWritten
                 mpBuffer->append(gFixedTestBuffer.data() +
-                    offset + gBuffersWritten, nBytesToWrite);
+                    offset + (gBuffersWritten % 500), nBytesToWrite);
                 offset += nBytesToWrite;
                 gBytesWritten += nBytesToWrite;
                 nBlocksWritten++;
@@ -130,7 +130,7 @@ MainWindow::timerEvent(QTimerEvent* event)
             if (offset == gTestBufferLength) {
                 // compare sliding window cyclic buffer pattern
                 if (memcmp(readBuffer.data(),
-                    gFixedTestBuffer.data() + gBuffersRead,
+                    gFixedTestBuffer.data() + (gBuffersRead % 500),
                     gTestBufferLength) != 0) {
                     ui->errorCounter->setText(QString(
                         "%L1").arg(++gErrorCounter));
